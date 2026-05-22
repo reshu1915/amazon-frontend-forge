@@ -2,9 +2,11 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { MapPin, Search, ShoppingCart } from "lucide-react";
 import { useState } from "react";
 import { useCart } from "../lib/cart";
+import { useAuth } from "../lib/auth";
 
 export function Header() {
   const { count } = useCart();
+  const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [q, setQ] = useState("");
 
@@ -46,10 +48,25 @@ export function Header() {
           </button>
         </form>
 
-        <div className="hidden md:block text-sm border border-transparent hover:border-white px-2 py-1">
-          <div className="text-[11px]">Hello, sign in</div>
-          <div className="font-bold">Account & Lists</div>
-        </div>
+        {user ? (
+          <div className="hidden md:block relative group text-sm border border-transparent hover:border-white px-2 py-1 cursor-pointer">
+            <div className="text-[11px]">Hello, {(user.user_metadata?.full_name as string) || user.email?.split("@")[0]}</div>
+            <div className="font-bold">Account & Lists</div>
+            <div className="absolute right-0 top-full hidden group-hover:block bg-white text-black shadow-lg rounded min-w-[160px] z-50 py-1">
+              <button
+                onClick={async () => { await signOut(); navigate({ to: "/" }); }}
+                className="block w-full text-left px-3 py-2 text-sm hover:bg-gray-100"
+              >
+                Sign out
+              </button>
+            </div>
+          </div>
+        ) : (
+          <Link to="/login" className="hidden md:block text-sm border border-transparent hover:border-white px-2 py-1">
+            <div className="text-[11px]">Hello, sign in</div>
+            <div className="font-bold">Account & Lists</div>
+          </Link>
+        )}
 
         <div className="hidden lg:block text-sm border border-transparent hover:border-white px-2 py-1">
           <div className="text-[11px]">Returns</div>

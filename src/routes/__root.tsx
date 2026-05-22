@@ -10,6 +10,8 @@ import {
 
 import appCss from "../styles.css?url";
 import { CartProvider } from "../lib/cart";
+import { AuthProvider } from "../lib/auth";
+import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
   return (
@@ -114,9 +116,12 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <CartProvider>
-        <Outlet />
-      </CartProvider>
+      <AuthProvider>
+        <CartProvider>
+          <Outlet />
+          <Toaster />
+        </CartProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
